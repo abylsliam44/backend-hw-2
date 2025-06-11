@@ -1,81 +1,175 @@
-# Finance Manager API
+# Financial Management Application
 
-A FastAPI-based financial management application that helps users track their income and expenses.
+A comprehensive financial management application with real-time market data integration and AI-powered insights.
 
 ## Features
 
-- User management
-- Transaction tracking (income and expenses)
-- PostgreSQL database integration
-- Docker support
-- CI/CD with GitHub Actions
+### Core Functionality
+- User account management
+- Transaction tracking and categorization
+- Financial analytics and reporting
+- RESTful API with FastAPI
+- Modern React frontend with Material-UI
 
-## Prerequisites
+### Market Data Integration
+- Real-time market data fetching from Yahoo Finance
+- Support for stocks (AAPL, MSFT, GOOGL, AMZN) and cryptocurrencies (BTC-USD, ETH-USD)
+- Historical data storage and retrieval
+- Daily automated data updates
 
-- Python 3.11+
-- PostgreSQL
-- Docker (optional)
+### AI Integration
+- AI-powered financial insights using OpenAI
+- Transaction analysis and categorization
+- Personalized financial advice
+- Extensible AI assistant architecture (supports OpenAI, with easy integration for Claude, Gemini, etc.)
 
-## Installation
+### Task Automation
+- Celery task queue integration
+- Scheduled daily market data updates
+- Automated transaction notifications
+- Monthly financial summaries
+
+### Monitoring and Management
+- Flower dashboard for task monitoring
+- Redis for caching and task queue
+- PostgreSQL for data persistence
+- Docker containerization for all services
+
+## Tech Stack
+
+- **Backend**: FastAPI, Python 3.11
+- **Frontend**: React, Material-UI
+- **Database**: PostgreSQL 15
+- **Cache & Queue**: Redis 7
+- **Task Queue**: Celery 5.3
+- **Task Monitor**: Flower 2.0
+- **Container**: Docker & Docker Compose
+- **Market Data**: Yahoo Finance API
+- **AI Integration**: OpenAI API
+
+## API Endpoints
+
+### User Management
+- POST `/users/` - Create new user
+- GET `/users/{user_id}` - Get user details
+
+### Transactions
+- POST `/users/{user_id}/transactions/` - Create transaction
+- GET `/users/{user_id}/transactions/` - List user transactions
+- GET `/transactions/{transaction_id}` - Get transaction details
+- PUT `/transactions/{transaction_id}` - Update transaction
+- DELETE `/transactions/{transaction_id}` - Delete transaction
+
+### Market Data
+- GET `/market-data/latest/{symbol}` - Get latest market data
+- GET `/market-data/historical/{symbol}` - Get historical data
+- POST `/market-data/fetch` - Manually trigger data fetch
+
+## Setup Instructions
+
+### Prerequisites
+- Docker and Docker Compose
+- OpenAI API key (for AI features)
+
+### Environment Variables
+Create a `.env` file with:
+```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_DB=finance_db
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+### Running the Application
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
-cd <your-repo-name>
+git clone <repository-url>
+cd <repository-name>
 ```
 
-2. Create a virtual environment and activate it:
+2. Start the services:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+docker-compose up --build
 ```
 
-3. Install dependencies:
+3. Access the services:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Documentation: http://localhost:8000/docs
+- Flower Dashboard: http://localhost:5555
+
+### Development Setup
+
+1. Install backend dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file with your database configuration:
-```
-POSTGRES_USER=coach_admin
-POSTGRES_PASSWORD=finCoach_2025!
-POSTGRES_DB=fincoach_db
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-```
-
-## Running the Application
-
-### Using Python directly:
-
+2. Install frontend dependencies:
 ```bash
+cd frontend
+npm install
+```
+
+3. Run development servers:
+```bash
+# Backend
 uvicorn app.main:app --reload
+
+# Frontend
+npm start
 ```
 
-### Using Docker:
+## Architecture
 
-```bash
-docker build -t finance-app .
-docker run -p 8000:8000 finance-app
+```mermaid
+graph TD
+    A[Frontend - React] --> B[Backend - FastAPI]
+    B --> C[PostgreSQL]
+    B --> D[Redis]
+    E[Celery Worker] --> D
+    E --> C
+    F[Celery Beat] --> E
+    G[Flower] --> E
+    H[OpenAI API] --> B
+    I[Yahoo Finance API] --> E
 ```
 
-The API will be available at `http://localhost:8000`
+## Project Structure
+```
+.
+├── app/
+│   ├── assistant/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   └── openai_assistant.py
+│   ├── services/
+│   │   └── market_data.py
+│   ├── __init__.py
+│   ├── main.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── database.py
+│   └── celery_app.py
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── Dockerfile
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
 
-## API Documentation
+## Contributing
 
-Once the application is running, you can access:
-- Swagger UI documentation: `http://localhost:8000/docs`
-- ReDoc documentation: `http://localhost:8000/redoc`
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-## API Endpoints
+## License
 
-### Users
-- POST `/users/` - Create a new user
-- GET `/users/{user_id}` - Get user details
-
-### Transactions
-- POST `/users/{user_id}/transactions/` - Create a new transaction
-- GET `/users/{user_id}/transactions/` - Get all transactions for a user
-- GET `/transactions/{transaction_id}` - Get transaction details
-- PUT `/transactions/{transaction_id}` - Update a transaction
-- DELETE `/transactions/{transaction_id}` - Delete a transaction 
+This project is licensed under the MIT License - see the LICENSE file for details. 
